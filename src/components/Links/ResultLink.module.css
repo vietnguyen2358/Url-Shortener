@@ -1,0 +1,38 @@
+.result {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.result input {
+    /* color: black; */
+    border: none;
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    border-radius: 3px;
+}
+
+.copied,
+.button {
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 3px;
+}
+
+.button:hover {
+    padding: 0.5rem 1rem;
+    background: #fff;
+    color: var(--primary-color);
+    border-radius: 3px;
+    border: none;
+}
+
+.noData {
+    color: #fff;
+    font-size: 1rem;
+}
