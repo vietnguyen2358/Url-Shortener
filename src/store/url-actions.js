@@ -1,4 +1,5 @@
 import { setShortenedLink } from "./url-slice";
+import CryptoJS from "crypto-js";
 
 const BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -28,16 +29,17 @@ const decodeBase62 = str => {
     return decoded;
 }
 
-const generateRandomID = () => {
-    const rand = Math.floor(Math.random() * 1e6);
-    return encodeBase62(rand);
+const hashUrl = (url) => {
+    const hash = CryptoJS.SHA256(url).toString(CryptoJS.enc.Hex);
+    const numID = parseInt(hash.slice(0, 16), 16);
+    return numID;
 }
 
 export const fetchOriginalUrl = (shortUrlID) => {
-    // const numID = decodeBase62(shortUrlID);
+    const numID = decodeBase62(shortUrlID);
     return async dispatch => {
         try {
-            const response = await fetch(`https://url-shortener-ac1ce-default-rtdb.firebaseio.com/${shortUrlID}.json`);
+            const response = await fetch(`https://url-shortener-ac1ce-default-rtdb.firebaseio.com/${numID}.json`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch URL.');
@@ -59,9 +61,10 @@ export const fetchOriginalUrl = (shortUrlID) => {
 
 export const storeUrl = (originalUrl) => {
     return async dispatch => {
-        const uniqueID = generateRandomID();
+        const numID = hashUrl(originalUrl);
+        const uniqueID = encodeBase62(numID);
         try {
-            const response = await fetch(`https://url-shortener-ac1ce-default-rtdb.firebaseio.com/${uniqueID}.json`,
+            const response = await fetch(`https://url-shortener-ac1ce-default-rtdb.firebaseio.com/${numID}.json`,
                 {
                     method: 'PUT',
                     body: JSON.stringify({ originalUrl: originalUrl.trim() }),
